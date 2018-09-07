@@ -21,6 +21,8 @@ int main(int argc, char** argv)
   }
   
   QApplication::setQuitOnLastWindowClosed(false);
+  QApplication::setOrganizationName("qpushjet");
+  QApplication::setApplicationName("qpushjet");
   
   qpushjet qpush;
   

@@ -4,10 +4,12 @@
 #include <QMenu>
 #include <QAction>
 #include <QIcon>
-
+#include <QSettings>
+#include "device.h"
+#include <QPushButton>
+#include <QMessageBox>
 
 const string RESOURCE_ICON_PATH = ":/resources/pushjet.svg";
-
 
 qpushjet::qpushjet(QWidget* parent)
 : QDialog(parent)
@@ -15,8 +17,14 @@ qpushjet::qpushjet(QWidget* parent)
   _ui.setupUi(this);
 
   
+  _uuid = get_or_create_device_uuid();
+  _ui.uuidLine->setReadOnly(true);
+  _ui.uuidLine->setText(_uuid.toString());
+  
   setuptrayicon();
   _systrayicon->show();
+  
+  QObject::connect(_ui.generateuuidButton, &QPushButton::pressed, this, &qpushjet::new_device_uuid);
    
 }
 
@@ -40,3 +48,25 @@ void qpushjet::setuptrayicon()
   _systrayicon->setIcon(QIcon(RESOURCE_ICON_PATH.c_str()));
   
 }
+
+void qpushjet::new_device_uuid()
+{
+    QMessageBox::StandardButton areyousure = QMessageBox::question(this, "Confirm new uuid" , 
+                                                                   "This will create a new device uuid, your old uuid will be lost. Are you sure?",
+                                                                   QMessageBox::Yes | QMessageBox::No);
+    
+    if(areyousure == QMessageBox::Yes) {
+        
+        auto newuuid = QUuid::createUuid();
+        QSettings settings;
+        settings.setValue("device/uuid",newuuid.toString());
+        _ui.uuidLine->setText(newuuid.toString());
+    }
+    
+        
+    
+}
+
+
+
+
