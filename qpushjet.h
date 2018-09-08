@@ -13,7 +13,7 @@ class QSystemTrayIcon;
 class QMenu;
 class QAction;
 class QSettings;
-
+class services_model;
 class desktop_notifier;
 
 class qpushjet : public QDialog
@@ -40,6 +40,7 @@ private:
     QAction* _settingsaction;
     QSettings* _settings;
     QUuid _uuid;
+    services_model* _services;
 };
 
 

@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include <QMessageBox>
 #include "notifications.h"
+#include "model.h"
 
 const string RESOURCE_ICON_PATH = ":/resources/pushjet.svg";
 
@@ -31,6 +32,10 @@ qpushjet::qpushjet(QWidget* parent)
   
   _notifier = new desktop_notifier;
   
+  _services = new services_model;
+  
+  _ui.serviceTable->setModel(_services);
+  
 }
 
 qpushjet::~qpushjet()
@@ -38,6 +43,10 @@ qpushjet::~qpushjet()
     if(_notifier)
     {
         delete _notifier;
+    }
+    if(_services)
+    {
+        delete _services;
     }
 }
 
