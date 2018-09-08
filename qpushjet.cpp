@@ -36,6 +36,9 @@ qpushjet::qpushjet(QWidget* parent)
   
   _ui.serviceTable->setModel(_services);
   
+  QObject::connect(_ui.addServiceButton, &QPushButton::pressed, _services, &services_model::addEmptyService);
+  
+  
 }
 
 qpushjet::~qpushjet()

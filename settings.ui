@@ -66,6 +66,31 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="title">
+      <string>C&amp;lient</string>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="serverLabel">
+        <property name="text">
+         <string>pushjet server</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="serverUrl"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="device_settings">
      <property name="title">
       <string>Device</string>
@@ -94,7 +119,7 @@
    <item>
     <widget class="QGroupBox" name="debug_options">
      <property name="title">
-      <string>GroupBox</string>
+      <string>debug</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="0" column="0">
