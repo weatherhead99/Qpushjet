@@ -94,6 +94,22 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="debug_options">
+     <property name="title">
+      <string>GroupBox</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QPushButton" name="testNotificationButton">
+        <property name="text">
+         <string>test desktop notification</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>

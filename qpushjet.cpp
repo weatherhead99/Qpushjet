@@ -8,6 +8,7 @@
 #include "device.h"
 #include <QPushButton>
 #include <QMessageBox>
+#include "notifications.h"
 
 const string RESOURCE_ICON_PATH = ":/resources/pushjet.svg";
 
@@ -25,8 +26,21 @@ qpushjet::qpushjet(QWidget* parent)
   _systrayicon->show();
   
   QObject::connect(_ui.generateuuidButton, &QPushButton::pressed, this, &qpushjet::new_device_uuid);
-   
+  
+  _ui.debug_options->setVisible(false);
+  
+  _notifier = new desktop_notifier;
+  
 }
+
+qpushjet::~qpushjet()
+{
+    if(_notifier)
+    {
+        delete _notifier;
+    }
+}
+
 
 
 void qpushjet::setuptrayicon()
@@ -68,5 +82,12 @@ void qpushjet::new_device_uuid()
 }
 
 
+qpushjet_debugmode::qpushjet_debugmode(QWidget* parent)
+{
+    
+    _ui.debug_options->setVisible(true);
+    
+    QObject::connect(_ui.testNotificationButton, &QPushButton::pressed, _notifier, &desktop_notifier::send_test_notify);
+}
 
 

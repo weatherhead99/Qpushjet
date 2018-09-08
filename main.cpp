@@ -1,7 +1,9 @@
 #include <QApplication>
 #include <QMessageBox>
 #include <QSystemTrayIcon>
-
+#include <QCommandLineParser>
+#include <QDebug>
+#include <memory>
 
 #include "qpushjet.h"
 
@@ -24,7 +26,27 @@ int main(int argc, char** argv)
   QApplication::setOrganizationName("qpushjet");
   QApplication::setApplicationName("qpushjet");
   
-  qpushjet qpush;
+  
+  QCommandLineParser parser;
+  parser.addHelpOption();
+  
+  QCommandLineOption debug(QStringList() << "debug" << "d", "start gui in debug mode" );
+  parser.addOption(debug);
+  
+  parser.process(app);
+  
+  
+  std::unique_ptr<qpushjet> qpush;
+  
+  if(parser.isSet(debug))
+  {
+      qDebug() << "running in debug mode...";
+      qpush.reset(new qpushjet_debugmode);
+  }
+  else
+  {
+        qpush.reset(new qpushjet);
+  }
   
   
   
