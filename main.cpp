@@ -33,6 +33,9 @@ int main(int argc, char** argv)
   QCommandLineOption debug(QStringList() << "debug" << "d", "start gui in debug mode" );
   parser.addOption(debug);
   
+  QCommandLineOption settings(QStringList() << "settings" << "s", "start with settings gui open");
+  parser.addOption(settings);
+  
   parser.process(app);
   
   
@@ -41,11 +44,11 @@ int main(int argc, char** argv)
   if(parser.isSet(debug))
   {
       qDebug() << "running in debug mode...";
-      qpush.reset(new qpushjet_debugmode);
+      qpush.reset(new qpushjet_debugmode(nullptr,parser.isSet(settings)));
   }
   else
   {
-        qpush.reset(new qpushjet);
+        qpush.reset(new qpushjet(nullptr,parser.isSet(settings)));
   }
   
   

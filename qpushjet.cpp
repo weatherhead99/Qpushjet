@@ -10,10 +10,11 @@
 #include <QMessageBox>
 #include "notifications.h"
 #include "model.h"
+#include "client.h"
 
 const string RESOURCE_ICON_PATH = ":/resources/pushjet.svg";
 
-qpushjet::qpushjet(QWidget* parent)
+qpushjet::qpushjet(QWidget* parent, bool opensettings)
 : QDialog(parent)
 {
   _ui.setupUi(this);
@@ -26,8 +27,6 @@ qpushjet::qpushjet(QWidget* parent)
   setuptrayicon();
   _systrayicon->show();
   
-  QObject::connect(_ui.generateuuidButton, &QPushButton::pressed, this, &qpushjet::new_device_uuid);
-  
   _ui.debug_options->setVisible(false);
   
   _notifier = new desktop_notifier;
@@ -36,8 +35,22 @@ qpushjet::qpushjet(QWidget* parent)
   
   _ui.serviceTable->setModel(_services);
   
-  QObject::connect(_ui.addServiceButton, &QPushButton::pressed, _services, &services_model::addEmptyService);
+  _ui.serverUrl->setText(get_server_url().toString());
   
+  
+  connect(_ui.addServiceButton, &QPushButton::pressed, _services, &services_model::addEmptyService);
+  
+  connect(_ui.generateuuidButton, &QPushButton::pressed, this, &qpushjet::new_device_uuid);
+  
+  connect(_ui.buttonBox, &QDialogButtonBox::accepted, this, &qpushjet::savesettings);
+  
+  connect(_ui.buttonBox, &QDialogButtonBox::rejected, this,
+          &qpushjet::revertsettings);
+  
+  if(opensettings)
+  {
+      _settingsaction->trigger();
+  }
   
 }
 
@@ -85,7 +98,6 @@ void qpushjet::new_device_uuid()
         
         auto newuuid = QUuid::createUuid();
         QSettings settings;
-        settings.setValue("device/uuid",newuuid.toString());
         _ui.uuidLine->setText(newuuid.toString());
     }
     
@@ -94,7 +106,25 @@ void qpushjet::new_device_uuid()
 }
 
 
-qpushjet_debugmode::qpushjet_debugmode(QWidget* parent)
+void qpushjet::savesettings()
+{
+    QSettings settings;
+    settings.setValue("device/uuid",_ui.uuidLine->text());
+    settings.setValue("client/apiurl",_ui.serverUrl->text());
+    
+}
+
+void qpushjet::revertsettings()
+{
+    QSettings settings;
+    _ui.uuidLine->setText(settings.value("device/uuid").toString());
+    _ui.serverUrl->setText(settings.value("client/apiurl").toString());
+}
+
+
+
+qpushjet_debugmode::qpushjet_debugmode(QWidget* parent, bool opensettings)
+: qpushjet(parent,opensettings)
 {
     
     _ui.debug_options->setVisible(true);

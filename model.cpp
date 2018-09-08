@@ -37,7 +37,6 @@ int services_model::rowCount(const QModelIndex& parent) const
 
 QVariant services_model::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    qDebug() << "section: " << section;
     
     if(orientation == Qt::Vertical)
     {
@@ -46,6 +45,7 @@ QVariant services_model::headerData(int section, Qt::Orientation orientation, in
     
     switch(section)
     {
+    qDebug() << "section: " << section;
         case 0: return QString("name");
         case 1: return QString("refreshed");
         case 2: return QString("created");
@@ -78,7 +78,7 @@ QVariant services_model::data(const QModelIndex& index, int role) const
 
 bool services_model::insertRows(int row, int count, const QModelIndex& parent)
 {
-    beginInsertRows(parent,_servicemap.size(), _servicemap.size() + count);
+    beginInsertRows(parent,_servicemap.size() , _servicemap.size() + count );
     
     
     endInsertRows();

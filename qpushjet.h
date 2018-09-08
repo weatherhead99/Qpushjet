@@ -21,7 +21,7 @@ class qpushjet : public QDialog
     Q_OBJECT
   
   public:
-    qpushjet(QWidget* parent = nullptr);
+    qpushjet(QWidget* parent = nullptr, bool opensettings=false);
     virtual ~qpushjet();
   
     public slots:
@@ -31,7 +31,8 @@ protected:
     desktop_notifier* _notifier;
   
 private:
-    
+    void savesettings();
+    void revertsettings();
     void setuptrayicon();
     
     QSystemTrayIcon* _systrayicon;
@@ -49,7 +50,7 @@ class qpushjet_debugmode : public qpushjet
   Q_OBJECT
   
 public:
-    qpushjet_debugmode(QWidget* parent = nullptr);
+    qpushjet_debugmode(QWidget* parent = nullptr, bool opensettings=false);
     
     
 };
