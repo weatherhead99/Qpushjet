@@ -3,19 +3,13 @@
 #include <QAbstractTableModel>
 #include <QDateTime>
 #include <QString>
-#include <QMap>
+#include <QVector>
+#include "pushjet_types.h"
 
 using std::string;
 
 class QSettings;
 
-struct pushjet_service {
-    QString name;
-    QDateTime refreshed;
-    QDateTime created;
-    QString pubkey;
-    
-};
 
 
 class services_model : public QAbstractTableModel
@@ -35,13 +29,16 @@ public:
 
     bool setData(const QModelIndex & index, const QVariant & value, int role) override;
     
+    Qt::ItemFlags flags(const QModelIndex & index) const override;
+    
 public slots:
     void addEmptyService();
+    void syncServicesToFile();
     
     
 private:
     QSettings* _settings;
-    QMap<QString, pushjet_service> _servicemap;
+    QVector<pushjet_service> _services;
     
     
 };

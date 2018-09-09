@@ -10,12 +10,7 @@ services_model::services_model()
     QStringList groups = _settings->childGroups();
     qDebug() << "groups: " << groups;
     
-    if(!groups.contains("services"))
-    {
-        qDebug() << "settings doesn't contain services group, creating...";
-        _settings->beginGroup("services");
-        _settings->endGroup();
-    }
+    _settings->beginGroup("services");
     
 }
 
@@ -32,7 +27,10 @@ int services_model::columnCount(const QModelIndex& parent) const
 
 int services_model::rowCount(const QModelIndex& parent) const
 {
-    return _servicemap.size();
+    if(parent.isValid())
+        return 0;
+    
+    return _services.size();
 }
 
 QVariant services_model::headerData(int section, Qt::Orientation orientation, int role) const
@@ -61,7 +59,7 @@ QVariant services_model::headerData(int section, Qt::Orientation orientation, in
 
 QVariant services_model::data(const QModelIndex& index, int role) const
 {
-    auto itemit = (_servicemap.begin() + index.row());
+    auto itemit = (_services.begin() + index.row());
     
     switch(index.column())
     {
@@ -78,8 +76,12 @@ QVariant services_model::data(const QModelIndex& index, int role) const
 
 bool services_model::insertRows(int row, int count, const QModelIndex& parent)
 {
-    beginInsertRows(parent,_servicemap.size() , _servicemap.size() + count );
+    beginInsertRows(parent,row , row + count - 1 );
+    qDebug() << "inserting row: " << row;
+    qDebug() << "count: " <<count;
     
+    _services.insert(row,count,pushjet_service());
+    qDebug() << "services size: " << _services.size();
     
     endInsertRows();
     return true;
@@ -88,8 +90,8 @@ bool services_model::insertRows(int row, int count, const QModelIndex& parent)
 
 bool services_model::removeRows(int row, int count, const QModelIndex& parent)
 {
-    beginRemoveRows(parent,row,row+count);
-    
+    beginRemoveRows(parent,row,row+count -1);
+    _services.remove(row,count);
     endRemoveRows();
     return true;
     
@@ -97,15 +99,48 @@ bool services_model::removeRows(int row, int count, const QModelIndex& parent)
 
 bool services_model::setData(const QModelIndex& index, const QVariant& value, int role)
 {
+    auto it = _services.begin() + index.row();
     
+    switch(index.column())
+    {
+        case 0 : 
+            it->name = value.toString();break;
+        case 1:
+            it->refreshed = QDateTime::fromString(value.toString()); break;
+        case 2:
+            it->created = QDateTime::fromString(value.toString()); break;
+    }
+    
+    return false;
     
 }
-
-
 
 void services_model::addEmptyService()
 {
     insertRow(rowCount(QModelIndex()));
+}
+
+void services_model::syncServicesToFile()
+{
+    for(auto& item : _services)
+    {
+        if(item.name.size() == 0)
+        {
+            qDebug() << "empty service name, not syncing...";
+            continue;
+        }
+        _settings->setValue(item.name + "/pubkey", item.pubkey);
+        _settings->setValue(item.name + "/created", item.created.toString());
+        _settings->setValue(item.name + "/refreshed", item.refreshed.toString());
+        
+        
+    };
+}
+
+Qt::ItemFlags services_model::flags(const QModelIndex& index) const
+{
+    return Qt::ItemIsEditable | Qt::ItemIsSelectable;
+    
 }
 
 

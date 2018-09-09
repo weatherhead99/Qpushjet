@@ -40,9 +40,13 @@ qpushjet::qpushjet(QWidget* parent, bool opensettings)
   
   connect(_ui.addServiceButton, &QPushButton::pressed, _services, &services_model::addEmptyService);
   
+  
   connect(_ui.generateuuidButton, &QPushButton::pressed, this, &qpushjet::new_device_uuid);
   
   connect(_ui.buttonBox, &QDialogButtonBox::accepted, this, &qpushjet::savesettings);
+  connect(_ui.buttonBox, &QDialogButtonBox::accepted, _services,
+          &services_model::syncServicesToFile);
+  
   
   connect(_ui.buttonBox, &QDialogButtonBox::rejected, this,
           &qpushjet::revertsettings);
